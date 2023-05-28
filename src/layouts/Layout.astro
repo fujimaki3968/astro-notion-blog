@@ -19,7 +19,10 @@ const database = await getDatabase()
 const siteTitle = title ? `${title} - ${database.Title}` : database.Title
 const siteDescription = description ? description : database.Description
 const siteURL = new URL(getNavLink(path), Astro.site).toString()
-const siteOGImage = new URL(getStaticFilePath('/default-og-image.png'), Astro.site)
+const siteOGImage = new URL(
+  getStaticFilePath('/default-og-image.png'),
+  Astro.site
+)
 
 let coverImageURL: string
 if (database.Cover) {
@@ -34,20 +37,11 @@ if (database.Cover) {
   }
 }
 
-let customIconURL: string
-if (database.Icon && database.Icon.Type === 'file') {
-  try {
-    customIconURL = filePath(new URL(database.Icon.Url))
-  } catch (err) {
-    console.log('Invalid DB custom icon URL')
-  }
-}
-
 const asidePaddingTop = coverImageURL ? '200px' : '60px'
 ---
 
 <!DOCTYPE html>
-<html lang="en" prefix="og: https://ogp.me/ns#">
+<html lang="ja" prefix="og: https://ogp.me/ns#">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="max-image-preview:large" />
@@ -56,6 +50,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
     <title>{siteTitle}</title>
     <meta name="description" content={siteDescription} />
     <link rel="canonical" href={siteURL} />
+    <link rel="icon" href="icon.png" />
     <meta property="og:url" content={siteURL} />
     <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={siteDescription} />
@@ -74,8 +69,8 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
   </head>
   <body>
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
-    <div class="container">
-      <main>
+    <div class="">
+      <main class="w-full">
         {
           coverImageURL && (
             <div class="cover">
@@ -84,53 +79,44 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
           )
         }
 
-        <div class="content">
-          <header>
-            <h1>
-              <a href={getNavLink('/')}>
-                {
-                  database.Icon && database.Icon.Type === 'emoji' ? (
-                    <>
-                      <span>{database.Icon.Emoji}</span>
-                      {database.Title}
-                    </>
-                  ) : database.Icon && database.Icon.Type === 'external' ? (
-                    <>
-                      <img src={database.Icon.Url} />
-                      {database.Title}
-                    </>
-                  ) : database.Icon && database.Icon.Type === 'file' ? (
-                    <>
-                      <img src={customIconURL} class="custom-icon" />
-                      {database.Title}
-                    </>
-                  ) : (
-                    database.Title
-                  )
-                }
+        <div class="flex flex-col md:flex-row-reverse w-full h-[80vh]">
+          <div class="flex-1">
+            <div class="content flex-1">
+              <a href={getNavLink('/')} class="icon">
+                <img
+                  class="w-[120px] h-[120px] rounded-lg"
+                  src="icon.png"
+                  alt="makiartのアイコン画像"
+                />
               </a>
-            </h1>
-            <div class="description">
-              {database.Description}
-            </div>
-          </header>
+              <header>
+                <h1 class="font-black text-3xl">
+                  <a href={getNavLink('/')}>
+                    {database.Title}
+                  </a>
+                </h1>
+                <div class="description">
+                  {database.Description}
+                </div>
+              </header>
 
-          <slot name="main" />
+              <slot name="main" />
 
-          <footer>
-            <div>
-              <span>Powered by</span>
-              <a href="https://github.com/otoyo/astro-notion-blog"
-                >astro-notion-blog</a
-              >
+              <footer>
+                <div>
+                  <span>Powered by</span>
+                  <a href="https://github.com/otoyo/astro-notion-blog"
+                    >astro-notion-blog</a
+                  >
+                </div>
+              </footer>
             </div>
-          </footer>
+          </div>
+          <aside>
+            <slot name="aside" />
+          </aside>
         </div>
       </main>
-
-      <aside>
-        <slot name="aside" />
-      </aside>
     </div>
 
     {
@@ -174,6 +160,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
       order: 2;
       width: 100%;
       padding: 40px 20px 20px;
+      border-radius: 10vw 10vw 0 0;
     }
   }
 
@@ -188,6 +175,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
   }
 
   div.content {
+    margin-top: -7vh;
     padding: 20px 40px;
   }
   @media (max-width: 640px) {
