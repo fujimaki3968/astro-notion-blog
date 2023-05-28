@@ -73,7 +73,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
   <body>
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
     <div class="">
-      <main class="w-full">
+      <div class="w-full">
         {
           coverImageURL && (
             <div class="cover">
@@ -82,7 +82,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
           )
         }
 
-        <div class="flex flex-col md:flex-row-reverse w-full h-[80vh]">
+        <div class="flex flex-col md:flex-row-reverse w-full min-h-[80vh]">
           <div class="flex-1">
             <div class="content flex-1">
               <a href={getNavLink('/')} class="icon">
@@ -102,8 +102,9 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
                   {database.Description}
                 </div>
               </header>
-
-              <slot name="main" />
+              <main>
+                <slot name="main" />
+              </main>
 
               <footer>
                 <div>
@@ -119,7 +120,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
             <slot name="aside" />
           </aside>
         </div>
-      </main>
+      </div>
     </div>
 
     {
@@ -156,7 +157,7 @@ const asidePaddingTop = coverImageURL ? '200px' : '60px'
     order: 1;
     width: 300px;
     padding: var(--asidePaddingTop) 20px 20px;
-    background-color: #f4f4f4;
+    background-color: #f2f5ec;
   }
   @media (max-width: 640px) {
     aside {
